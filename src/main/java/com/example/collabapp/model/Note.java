@@ -15,5 +15,6 @@ public class Note {
     @Id
     private String id;
 
+    private String title;
     private String content;
 }
