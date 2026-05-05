@@ -3,11 +3,13 @@ package com.example.collabapp.services;
 import com.example.collabapp.model.Note;
 import com.example.collabapp.repository.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class NoteServiceImpl implements NoteService {
 
     @Autowired

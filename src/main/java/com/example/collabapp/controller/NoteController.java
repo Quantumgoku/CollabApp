@@ -8,10 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@RestController
 public class NoteController {
 
     @Autowired
-    NoteService noteService;
+    private NoteService noteService;
 
     @PostMapping("/notes")
     public Note saveNote(@RequestBody Note note){
