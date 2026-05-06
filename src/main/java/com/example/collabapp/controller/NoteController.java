@@ -19,6 +19,11 @@ public class NoteController {
         return noteService.saveNote(note);
     }
 
+    @GetMapping("/notes/{id}")
+    public Note getNote(@PathVariable String id){
+        return noteService.getNote(id);
+    }
+
     @GetMapping("/notes")
     public List<Note> fetchNotesList(){
         return noteService.fetchNotes();

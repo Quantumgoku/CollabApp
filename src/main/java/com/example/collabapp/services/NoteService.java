@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface NoteService {
     Note saveNote(Note note);
+    Note getNote(String id);
     List<Note> fetchNotes();
     Optional<Note> updateNote(Note note, String noteId);
     void deleteNote(String noteId);

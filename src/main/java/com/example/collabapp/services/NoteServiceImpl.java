@@ -21,6 +21,17 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
+    public Note getNote(String id){
+        Optional<Note> note;
+        if(id != null){
+            note = noteRepository.findById(id);
+        }else{
+            throw new RuntimeException("Invalid ID");
+        }
+        return note.get();
+    }
+
+    @Override
     public List<Note> fetchNotes() {
         List<Note> listOfNotes=new ArrayList<>();
         listOfNotes = noteRepository.findAll();
@@ -36,6 +47,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public void deleteNote(String noteId) {
+
         noteRepository.deleteById(noteId);
     }
 }
