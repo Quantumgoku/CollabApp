@@ -1,6 +1,6 @@
 package com.example.collabapp.services;
 
-import com.example.collabapp.model.User;
+import com.example.collabapp.model.dao.User;
 
 import java.util.List;
 import java.util.Optional;

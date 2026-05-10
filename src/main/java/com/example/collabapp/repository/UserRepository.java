@@ -1,6 +1,6 @@
 package com.example.collabapp.repository;
 
-import com.example.collabapp.model.User;
+import com.example.collabapp.model.dao.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,14 +1,15 @@
 package com.example.collabapp.services;
 
-import com.example.collabapp.model.Note;
+import com.example.collabapp.model.dto.request.NoteRequest;
+import com.example.collabapp.model.dto.response.NoteResponse;
+import com.example.collabapp.model.dto.response.NotesResponse;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface NoteService {
-    Note saveNote(Note note);
-    Note getNote(String id);
-    List<Note> fetchNotes();
-    Optional<Note> updateNote(Note note, String noteId);
+    NoteResponse saveNote(NoteRequest request);
+    NoteResponse getNote(String id);
+    NotesResponse fetchNotes();
+    Optional<NoteResponse> updateNote(NoteRequest note, String noteId);
     void deleteNote(String noteId);
 }
