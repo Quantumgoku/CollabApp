@@ -1,11 +1,14 @@
 package com.example.collabapp.controller;
 
-import com.example.collabapp.model.Note;
+import com.example.collabapp.model.dto.request.NoteRequest;
+import com.example.collabapp.model.dto.response.NoteResponse;
+import com.example.collabapp.model.dto.response.NotesResponse;
 import com.example.collabapp.services.NoteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -15,23 +18,23 @@ public class NoteController {
     private NoteService noteService;
 
     @PostMapping("/notes")
-    public Note saveNote(@RequestBody Note note){
-        return noteService.saveNote(note);
+    public ResponseEntity<NoteResponse> saveNote(@Valid @RequestBody NoteRequest request){    //used ResponseEntity for granular control of HTTP response and request,
+        return ResponseEntity.ok(noteService.saveNote(request));
     }
 
     @GetMapping("/notes/{id}")
-    public Note getNote(@PathVariable String id){
-        return noteService.getNote(id);
+    public ResponseEntity<NoteResponse> getNote(@PathVariable String id){
+        return ResponseEntity.ok(noteService.getNote(id));
     }
 
     @GetMapping("/notes")
-    public List<Note> fetchNotesList(){
-        return noteService.fetchNotes();
+    public ResponseEntity<NotesResponse> fetchNotesList(){
+        return ResponseEntity.ok(noteService.fetchNotes());
     }
 
     @PutMapping("/notes/{id}")
-    public Optional<Note> updateNote(@RequestBody Note note, @PathVariable String id){
-        return noteService.updateNote(note,id);
+    public ResponseEntity<Optional<NoteResponse>> updateNote(@Valid @RequestBody NoteRequest request, @PathVariable String id){
+        return ResponseEntity.ok(noteService.updateNote(request,id));
     }
 
     @DeleteMapping("/note/{id}")

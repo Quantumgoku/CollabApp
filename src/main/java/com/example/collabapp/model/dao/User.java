@@ -1,4 +1,4 @@
-package com.example.collabapp.model;
+package com.example.collabapp.model.dao;
 
 
 import lombok.*;

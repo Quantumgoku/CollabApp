@@ -1,6 +1,6 @@
 package com.example.collabapp.services;
 
-import com.example.collabapp.model.User;
+import com.example.collabapp.model.dao.User;
 import com.example.collabapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
