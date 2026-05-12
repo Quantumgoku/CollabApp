@@ -1,13 +1,13 @@
 package com.example.collabapp.services;
 
 import com.example.collabapp.model.dao.User;
+import com.example.collabapp.model.dto.request.UserRequest;
+import com.example.collabapp.model.dto.response.UserResponse;
 import com.example.collabapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -15,38 +15,63 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Override
-    public User addUser(User user) {
-        return userRepository.save(user);
+    private UserResponse mapToResponse(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .userName(user.getUsername())
+                .build();
+    }
+
+    private User mapToUser(UserRequest request) {
+        return User.builder()
+                .username(request.getUserName())
+                .build();
     }
 
     @Override
-    public User getUser(String id) {
-        Optional<User> user;
-        if(id != null){
-            user = userRepository.findById(id);
-        }else{
-            throw new RuntimeException("Invalid ID");
-        }
-        return user.get();
+    public UserResponse addUser(UserRequest request) {
+        User user = mapToUser(request);
+        User savedUser = userRepository.save(user);
+        return mapToResponse(savedUser);
     }
 
     @Override
-    public List<User> fetchUsers() {
-        List<User> listOfUsers= new  ArrayList<>();
-        listOfUsers=userRepository.findAll();
-        return listOfUsers;
+    public UserResponse getUser(String id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found with id: " + id));
+
+        return mapToResponse(user);
     }
 
     @Override
-    public Optional<User> updateUser(User user, String id) {
-        Optional<User> userOptional=userRepository.findById(id);
-        userOptional= Optional.ofNullable(user);
-        return userOptional;
+    public List<UserResponse> fetchUsers() {
+        List<User> users = userRepository.findAll();
+
+        return users.stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    @Override
+    public UserResponse updateUser(UserRequest request, String id) {
+        User existingUser=userRepository.findById(id).orElseThrow(
+                ()->new RuntimeException("Invalid ID")
+        );
+        existingUser.setUsername(request.getUserName());
+        existingUser.setEmail(request.getEmail());
+        User updatedUser = userRepository.save(existingUser);
+
+        return mapToResponse(updatedUser);
     }
 
     @Override
     public void deleteUser(String id) {
+
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("User not found with id: " + id);
+        }
+
         userRepository.deleteById(id);
     }
 }

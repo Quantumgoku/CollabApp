@@ -2,10 +2,12 @@ package com.example.collabapp.model.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
+@Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class NoteRequest {
     @NotBlank

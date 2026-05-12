@@ -1,12 +1,13 @@
 package com.example.collabapp.controller;
 
-import com.example.collabapp.model.dao.User;
+import com.example.collabapp.model.dto.request.UserRequest;
+import com.example.collabapp.model.dto.response.UserResponse;
 import com.example.collabapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -15,23 +16,23 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/user")
-    public User addUser(@RequestBody User user){
-        return userService.addUser(user);
+    public ResponseEntity<UserResponse> addUser(@RequestBody UserRequest user){
+        return ResponseEntity.ok(userService.addUser(user));
     }
 
     @GetMapping("/user/{id}")
-    public User getUser(@PathVariable String id){
-        return userService.getUser(id);
+    public ResponseEntity<UserResponse> getUser(@PathVariable String id){
+        return ResponseEntity.ok(userService.getUser(id));
     }
 
     @GetMapping("/users")
-    public List<User> fetchAllUsers(){
-        return userService.fetchUsers();
+    public ResponseEntity<List<UserResponse>> fetchAllUsers(){
+        return ResponseEntity.ok(userService.fetchUsers());
     }
 
     @PutMapping("/user/{id}")
-    public Optional<User> updateUser(@RequestBody User user,@PathVariable String id){
-        return userService.updateUser(user,id);
+    public ResponseEntity<UserResponse> updateUser(@RequestBody UserRequest userRequest,@PathVariable String id){
+        return ResponseEntity.ok(userService.updateUser(userRequest,id));
     }
 
     @DeleteMapping("/user/{id}")
