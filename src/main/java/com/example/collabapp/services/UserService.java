@@ -1,14 +1,14 @@
 package com.example.collabapp.services;
 
-import com.example.collabapp.model.dao.User;
+import com.example.collabapp.model.dto.request.UserRequest;
+import com.example.collabapp.model.dto.response.UserResponse;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
-    User addUser(User user);
-    User getUser(String id);
-    List<User> fetchUsers();
-    Optional<User> updateUser(User user, String id);
-    void deleteUser(String id);
+        UserResponse addUser(UserRequest request);
+        UserResponse getUser(String id);
+        List<UserResponse> fetchUsers();
+        UserResponse updateUser(UserRequest request, String id);
+        void deleteUser(String id);
 }

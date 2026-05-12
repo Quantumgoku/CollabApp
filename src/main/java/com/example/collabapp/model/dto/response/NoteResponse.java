@@ -1,10 +1,13 @@
 package com.example.collabapp.model.dto.response;
 
 
-import lombok.Builder;
-import lombok.Setter;
+import lombok.*;
 
 @Builder
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class NoteResponse {
     private String id;
     private String title;
