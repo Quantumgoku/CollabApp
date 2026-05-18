@@ -1,5 +1,3 @@
-# README.md
-
 # CollabApp
 
 Collaborative note-taking backend inspired by modern knowledge-sharing systems like Notion.
