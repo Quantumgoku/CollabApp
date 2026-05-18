@@ -4,13 +4,23 @@ import com.example.collabapp.model.dao.User;
 import com.example.collabapp.model.dto.request.UserRequest;
 import com.example.collabapp.model.dto.response.UserResponse;
 import com.example.collabapp.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private static final Logger logger=LoggerFactory.getLogger(UserServiceImpl.class);
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private UserRepository userRepository;
@@ -19,18 +29,22 @@ public class UserServiceImpl implements UserService {
         return UserResponse.builder()
                 .id(user.getId())
                 .userName(user.getUsername())
+                .email(user.getEmail())
                 .build();
     }
 
     private User mapToUser(UserRequest request) {
         return User.builder()
-                .username(request.getUserName())
+                .username(request.getUsername())
+                .email(request.getEmail())
                 .build();
     }
 
     @Override
     public UserResponse addUser(UserRequest request) {
+        logger.info("User Service add user service");
         User user = mapToUser(request);
+        user.setCreatedAt(Long.parseLong(LocalDateTime.now().toString()));
         User savedUser = userRepository.save(user);
         return mapToResponse(savedUser);
     }
@@ -40,14 +54,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("User not found with id: " + id));
-
+        logger.info("Fetched user: {}",mapToResponse(user));
         return mapToResponse(user);
     }
 
     @Override
     public List<UserResponse> fetchUsers() {
+        logger.info("fetch all users service");
         List<User> users = userRepository.findAll();
-
+        logger.info("Fetch list of users object -> {}",users);
         return users.stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -58,20 +73,19 @@ public class UserServiceImpl implements UserService {
         User existingUser=userRepository.findById(id).orElseThrow(
                 ()->new RuntimeException("Invalid ID")
         );
-        existingUser.setUsername(request.getUserName());
+        existingUser.setUsername(request.getUsername());
         existingUser.setEmail(request.getEmail());
         User updatedUser = userRepository.save(existingUser);
-
+        logger.info("Updating the user in repo");
         return mapToResponse(updatedUser);
     }
 
     @Override
     public void deleteUser(String id) {
-
         if (!userRepository.existsById(id)) {
             throw new RuntimeException("User not found with id: " + id);
         }
-
+        logger.info("Deleting the user in repo");
         userRepository.deleteById(id);
     }
 }

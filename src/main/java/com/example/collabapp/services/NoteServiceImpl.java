@@ -5,15 +5,18 @@ import com.example.collabapp.model.dto.request.NoteRequest;
 import com.example.collabapp.model.dto.response.NoteResponse;
 import com.example.collabapp.repository.NoteRepository;
 import org.jspecify.annotations.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class NoteServiceImpl implements NoteService {
+
+    private static final Logger logger= LoggerFactory.getLogger(NoteServiceImpl.class);
 
     @Autowired
     private NoteRepository noteRepository;
@@ -37,6 +40,9 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public NoteResponse saveNote(NoteRequest request) {
         Note note = noteRepository.save(mapToNote(request));
+        note.setCreatedAt(Long.parseLong(LocalDateTime.now().toString()));
+        note.setUpdateAt(Long.parseLong(LocalDateTime.now().toString()));
+        logger.info("Saving the note in repo");
         return mapToNoteResponse(note);
     }
 
@@ -45,12 +51,14 @@ public class NoteServiceImpl implements NoteService {
         Note note=noteRepository.findById(id).orElseThrow(
                 ()->new RuntimeException("No note for the id")
         );
+        logger.info("Getting the note from repo -> {}",note);
         return mapToNoteResponse(note);
     }
 
     @Override
     public List<NoteResponse> fetchNotes() {
         List<Note> noteList=noteRepository.findAll();
+        logger.info("Getting the list of notes from the repo");
         return noteList.stream()
                 .map(this::mapToNoteResponse)
                 .toList();
@@ -65,12 +73,13 @@ public class NoteServiceImpl implements NoteService {
         existingNote.setTitle(request.getTitle());
         existingNote.setUpdateAt(Long.parseLong(LocalDateTime.now().toString()));
         Note updatedNote=noteRepository.save(existingNote);
+        logger.info("Update the note in the repo");
         return mapToNoteResponse(updatedNote);
     }
 
     @Override
     public void deleteNote(String noteId) {
-
+        logger.info("Deleting the note from repo");
         noteRepository.deleteById(noteId);
     }
 }

@@ -117,14 +117,14 @@ Create maintainable backend architecture.
 
 ## Tasks
 
-* [*] Add DTO-based APIs
-* [ ] Add request validation
-* [ ] Add global exception handling
-* [ ] Add custom exceptions
-* [ ] Add logging
-* [ ] Add timestamps
-* [ ] Refactor controllers to thin controllers
-* [ ] Separate service/business logic cleanly
+* [x] Add DTO-based APIs
+* [x] Add request validation
+* [x] Add global exception handling
+* [x] Add custom exceptions
+* [x] Add logging
+* [x] Add timestamps
+* [x] Refactor controllers to thin controllers
+* [x] Separate service/business logic cleanly
 
 ---
 
