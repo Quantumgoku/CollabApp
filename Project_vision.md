@@ -117,7 +117,7 @@ Create maintainable backend architecture.
 
 ## Tasks
 
-* [ ] Add DTO-based APIs
+* [*] Add DTO-based APIs
 * [ ] Add request validation
 * [ ] Add global exception handling
 * [ ] Add custom exceptions
