@@ -4,8 +4,7 @@ import com.example.collabapp.model.dao.User;
 import com.example.collabapp.model.dto.request.UserRequest;
 import com.example.collabapp.model.dto.response.UserResponse;
 import com.example.collabapp.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
@@ -15,9 +14,8 @@ import java.util.List;
 
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
-
-    private static final Logger logger=LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -42,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse addUser(UserRequest request) {
-        logger.info("User Service add user service");
+        log.info("User Service add user service");
         User user = mapToUser(request);
         user.setCreatedAt(Long.parseLong(LocalDateTime.now().toString()));
         User savedUser = userRepository.save(user);
@@ -54,15 +52,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("User not found with id: " + id));
-        logger.info("Fetched user: {}",mapToResponse(user));
+        log.info("Fetched user: {}",mapToResponse(user));
         return mapToResponse(user);
     }
 
     @Override
     public List<UserResponse> fetchUsers() {
-        logger.info("fetch all users service");
+        log.info("fetch all users service");
         List<User> users = userRepository.findAll();
-        logger.info("Fetch list of users object -> {}",users);
+        log.info("Fetch list of users object -> {}",users);
         return users.stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -76,7 +74,7 @@ public class UserServiceImpl implements UserService {
         existingUser.setUsername(request.getUsername());
         existingUser.setEmail(request.getEmail());
         User updatedUser = userRepository.save(existingUser);
-        logger.info("Updating the user in repo");
+        log.info("Updating the user in repo");
         return mapToResponse(updatedUser);
     }
 
@@ -85,7 +83,7 @@ public class UserServiceImpl implements UserService {
         if (!userRepository.existsById(id)) {
             throw new RuntimeException("User not found with id: " + id);
         }
-        logger.info("Deleting the user in repo");
+        log.info("Deleting the user in repo");
         userRepository.deleteById(id);
     }
 }
