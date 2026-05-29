@@ -155,12 +155,12 @@ Allow multiple users to collaborate on notes.
 
 ## Tasks
 
-* [ ] Add collaboratorIds to notes
-* [ ] Share note API
-* [ ] Remove collaborator API
-* [ ] Permission validation
-* [ ] Owner vs collaborator access rules
-* [ ] View shared notes API
+* [x] Add collaboratorIds to notes
+* [x] Share note API
+* [x] Remove collaborator API
+* [x] Permission validation
+* [x] Owner vs collaborator access rules
+* [x] View shared notes API
 
 ---
 
