@@ -136,10 +136,10 @@ Implement secure multi-user authentication.
 
 ## Tasks
 
-* [ ] Add passwordHash to User
-* [ ] BCrypt password hashing
-* [ ] Register API
-* [ ] Login API
+* [x] Add passwordHash to User
+* [x] BCrypt password hashing
+* [x] Register API
+* [x] Login API
 * [ ] JWT token generation
 * [ ] JWT authentication filter
 * [ ] Secure protected endpoints
