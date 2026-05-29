@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -40,6 +41,16 @@ public class NoteController {
     public ResponseEntity<NoteResponse> updateNote(@Valid @RequestBody NoteRequest request, @PathVariable String id){
         log.info("Hitting put mapping route -> /note/{id}");
         return ResponseEntity.ok(noteService.updateNote(request,id));
+    }
+
+    @PostMapping("/notes/{id}/contributors")
+    public ResponseEntity<NoteResponse> addContributor(@PathVariable String id, @RequestBody Map<String,String> body){
+        return ResponseEntity.ok(noteService.addContributor(id,body.get("email")));
+    }
+
+    @DeleteMapping("/notes/{id}/contributors/{contributorId}")
+    public ResponseEntity<NoteResponse> removeContributor(@PathVariable String id,@PathVariable String contributorId){
+        return ResponseEntity.ok(noteService.removeContributor(id,contributorId));
     }
 
     @DeleteMapping("/note/{id}")
