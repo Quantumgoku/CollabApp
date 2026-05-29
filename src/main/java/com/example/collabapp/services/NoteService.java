@@ -10,5 +10,7 @@ public interface NoteService {
     NoteResponse getNote(String id);
     List<NoteResponse> fetchNotes();
     NoteResponse updateNote(NoteRequest note, String noteId);
+    NoteResponse addContributor(String noteId,String contributorEmail);
+    NoteResponse removeContributor(String noteId,String contributorId);
     void deleteNote(String noteId);
 }

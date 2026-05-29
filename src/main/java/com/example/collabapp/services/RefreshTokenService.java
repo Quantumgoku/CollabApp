@@ -62,4 +62,9 @@ public class RefreshTokenService {
         refreshTokenRepository.saveAll(tokens);
     }
 
+    public String getUserIdFromToken(String token) {
+        return refreshTokenRepository.findByToken(token)
+                .orElseThrow(()->new RuntimeException("Refresh token not found"))
+                .getUserId();
+    }
 }

@@ -5,8 +5,10 @@ import com.example.collabapp.model.dto.LoginUser;
 import com.example.collabapp.model.dto.RegisterUser;
 import com.example.collabapp.model.dto.request.UserRequest;
 import com.example.collabapp.model.dto.response.UserResponse;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
         UserResponse addUser(UserRequest request);
@@ -17,4 +19,7 @@ public interface UserService {
 
         UserResponse registerUser(RegisterUser user);
         LoginResponse loginUser(LoginUser user);
+
+        LoginResponse refresh(Map<String, String> body);
+        void logout(Map<String,String> body);
 }
