@@ -140,10 +140,10 @@ Implement secure multi-user authentication.
 * [x] BCrypt password hashing
 * [x] Register API
 * [x] Login API
-* [ ] JWT token generation
-* [ ] JWT authentication filter
-* [ ] Secure protected endpoints
-* [ ] Add current-user extraction
+* [x] JWT token generation
+* [x] JWT authentication filter
+* [x] Secure protected endpoints
+* [x] Add current-user extraction
 
 ---
 
