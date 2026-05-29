@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Document(collection = "notes")
@@ -24,8 +25,8 @@ public class Note {
 
     private List<String> listOfContributors;
 
-    private long createdAt;
-    private long updateAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updateAt;
 
     private int version;
 }

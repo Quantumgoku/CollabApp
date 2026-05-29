@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
-public class GloabalException{
+public class GlobalException {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> handleRuntime(RuntimeException ex) { //? -> means any object ig
