@@ -1,10 +1,12 @@
 package com.example.collabapp.controller;
 
+import com.example.collabapp.model.dto.LoginResponse;
 import com.example.collabapp.model.dto.LoginUser;
 import com.example.collabapp.model.dto.RegisterUser;
 import com.example.collabapp.model.dto.request.UserRequest;
 import com.example.collabapp.model.dto.response.UserResponse;
 import com.example.collabapp.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +33,8 @@ public class UserController {
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<UserResponse> loginUser(@RequestBody LoginUser user){
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginUser user, HttpServletRequest request){
+        user.setDeviceInfo(request.getHeader("User-Agent"));
         return ResponseEntity.ok(userService.loginUser(user));
     }
 

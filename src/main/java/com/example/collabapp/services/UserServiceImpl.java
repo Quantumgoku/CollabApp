@@ -1,6 +1,8 @@
 package com.example.collabapp.services;
 
+import com.example.collabapp.model.dao.RefreshToken;
 import com.example.collabapp.model.dao.User;
+import com.example.collabapp.model.dto.LoginResponse;
 import com.example.collabapp.model.dto.LoginUser;
 import com.example.collabapp.model.dto.RegisterUser;
 import com.example.collabapp.model.dto.request.UserRequest;
@@ -20,6 +22,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private RefreshTokenService refreshTokenService;
 
     @Autowired
     private UserRepository userRepository;
@@ -65,15 +73,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse loginUser(LoginUser user) {
+    public LoginResponse loginUser(LoginUser user) {
         User savedUser = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + user.getEmail()));
 
         if (!passwordEncoder.matches(user.getPassword(), savedUser.getHashedPassword())) {
             throw new RuntimeException("Invalid password");
         }
+        String accessToken=jwtService.generateAccessToken(savedUser.getId(),savedUser.getEmail());
+        RefreshToken refreshToken=refreshTokenService.createRefreshToken(savedUser.getId(), user.getDeviceInfo());
 
-        return mapToResponse(savedUser);
+        return LoginResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken.getToken())
+                .user(mapToResponse(savedUser))
+                .build();
     }
 
     @Override
@@ -125,15 +139,5 @@ public class UserServiceImpl implements UserService {
             }
         }
         return false;
-    }
-
-    private User findUserByEmail(String email){
-        List<User> users = userRepository.findAll();
-        for(User user:users){
-            if(email.equals(user.getEmail())){
-                return user;
-            }
-        }
-        return null;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.collabapp.services;
 
+import com.example.collabapp.model.dto.LoginResponse;
 import com.example.collabapp.model.dto.LoginUser;
 import com.example.collabapp.model.dto.RegisterUser;
 import com.example.collabapp.model.dto.request.UserRequest;
@@ -15,5 +16,5 @@ public interface UserService {
         void deleteUser(String id);
 
         UserResponse registerUser(RegisterUser user);
-        UserResponse loginUser(LoginUser user);
+        LoginResponse loginUser(LoginUser user);
 }

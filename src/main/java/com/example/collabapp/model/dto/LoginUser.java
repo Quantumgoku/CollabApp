@@ -18,5 +18,11 @@ public class LoginUser {
 
     @NotBlank
     private String password;
+
+    private String deviceInfo;
+
+    public void setDeviceInfo(String deviceInfo) {
+        this.deviceInfo = deviceInfo;
+    }
 }
 
