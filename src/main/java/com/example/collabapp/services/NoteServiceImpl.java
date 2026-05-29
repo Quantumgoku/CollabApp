@@ -38,8 +38,8 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public NoteResponse saveNote(NoteRequest request) {
         Note note = noteRepository.save(mapToNote(request));
-        note.setCreatedAt(Long.parseLong(LocalDateTime.now().toString()));
-        note.setUpdateAt(Long.parseLong(LocalDateTime.now().toString()));
+        note.setCreatedAt(LocalDateTime.now());
+        note.setUpdateAt(LocalDateTime.now());
         log.info("Saving the note in repo");
         return mapToNoteResponse(note);
     }
@@ -69,7 +69,7 @@ public class NoteServiceImpl implements NoteService {
         );
         existingNote.setContent(request.getContent());
         existingNote.setTitle(request.getTitle());
-        existingNote.setUpdateAt(Long.parseLong(LocalDateTime.now().toString()));
+        existingNote.setUpdateAt(LocalDateTime.now());
         Note updatedNote=noteRepository.save(existingNote);
         log.info("Update the note in the repo");
         return mapToNoteResponse(updatedNote);

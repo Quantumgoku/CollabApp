@@ -1,5 +1,7 @@
 package com.example.collabapp.controller;
 
+import com.example.collabapp.model.dto.LoginUser;
+import com.example.collabapp.model.dto.RegisterUser;
 import com.example.collabapp.model.dto.request.UserRequest;
 import com.example.collabapp.model.dto.response.UserResponse;
 import com.example.collabapp.services.UserService;
@@ -21,6 +23,16 @@ public class UserController {
     public ResponseEntity<UserResponse> addUser(@RequestBody UserRequest user){
         log.info("Handling user post mapping");
         return ResponseEntity.ok(userService.addUser(user));
+    }
+
+    @PostMapping("/auth/register")
+    public ResponseEntity<UserResponse> registerUser(@RequestBody RegisterUser user){
+        return ResponseEntity.ok(userService.registerUser(user));
+    }
+
+    @PostMapping("/auth/login")
+    public ResponseEntity<UserResponse> loginUser(@RequestBody LoginUser user){
+        return ResponseEntity.ok(userService.loginUser(user));
     }
 
     @GetMapping("/user/{id}")
