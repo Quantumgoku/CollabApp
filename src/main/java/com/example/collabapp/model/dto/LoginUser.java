@@ -2,10 +2,7 @@ package com.example.collabapp.model.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Builder
@@ -16,13 +13,10 @@ public class LoginUser {
     @Email(message = "Email should be valid")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Password cannot be empty")
     private String password;
 
+    @Setter
     private String deviceInfo;
-
-    public void setDeviceInfo(String deviceInfo) {
-        this.deviceInfo = deviceInfo;
-    }
 }
 

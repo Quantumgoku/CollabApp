@@ -2,6 +2,7 @@ package com.example.collabapp.services;
 
 import com.example.collabapp.exception.AccessDeniedException;
 import com.example.collabapp.exception.NoteNotFoundException;
+import com.example.collabapp.exception.StaleNoteException;
 import com.example.collabapp.exception.UserNotFoundException;
 import com.example.collabapp.model.dao.Note;
 import com.example.collabapp.model.dao.User;
@@ -42,6 +43,7 @@ public class NoteServiceImpl implements NoteService {
                 .ownerId(ownerId)
                 .createdAt(LocalDateTime.now())
                 .updateAt(LocalDateTime.now())
+                .version(1)
                 .build();
         log.info("Saving the note in repo");
         return mapToNoteResponse(noteRepository.save(note));
@@ -49,9 +51,8 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public NoteResponse getNote(String id){
-        Note note=noteRepository.findById(id).orElseThrow(
-                ()->new NoteNotFoundException(id)
-        );
+        String userId = securityUtils.getCurrentUserId();
+        Note note=getNoteWithAccess(id,userId);
         log.info("Getting the note from repo -> {}",note);
         return mapToNoteResponse(note);
     }
@@ -68,9 +69,17 @@ public class NoteServiceImpl implements NoteService {
     public NoteResponse updateNote(NoteRequest request, String noteId) {
         String userId = securityUtils.getCurrentUserId();
         Note note = getNoteWithAccess(noteId, userId);
+
+        log.info("Incoming version: {}, DB version: {}", request.getVersion(), note.getVersion());
+
+        if (note.getVersion() != request.getVersion()) {
+            throw new StaleNoteException();
+        }
+
         note.setContent(request.getContent());
         note.setTitle(request.getTitle());
         note.setUpdateAt(LocalDateTime.now());
+        note.setVersion(note.getVersion()+1);
         log.info("Update the note in the repo");
         return mapToNoteResponse(noteRepository.save(note));
     }
@@ -120,6 +129,10 @@ public class NoteServiceImpl implements NoteService {
                 .id(note.getId())
                 .title(note.getTitle())
                 .content(note.getContent())
+                .ownerId(note.getOwnerId())
+                .version(note.getVersion())
+                .createdAt(note.getCreatedAt())
+                .updatedAt(note.getUpdateAt())
                 .build();
     }
 
