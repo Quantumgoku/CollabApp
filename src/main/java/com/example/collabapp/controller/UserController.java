@@ -9,6 +9,7 @@ import com.example.collabapp.services.JwtService;
 import com.example.collabapp.services.RefreshTokenService;
 import com.example.collabapp.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,12 +38,12 @@ public class UserController {
     }
 
     @PostMapping("/auth/register")
-    public ResponseEntity<UserResponse> registerUser(@RequestBody RegisterUser user){
+    public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody RegisterUser user){
         return ResponseEntity.ok(userService.registerUser(user));
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginUser user, HttpServletRequest request){
+    public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginUser user, HttpServletRequest request){
         user.setDeviceInfo(request.getHeader("User-Agent"));
         return ResponseEntity.ok(userService.loginUser(user));
     }

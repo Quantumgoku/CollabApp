@@ -9,10 +9,12 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class NoteRequest {
-    @NotBlank
-    @Size(max=100)
+    @NotBlank(message = "Title cannot be empty")
+    @Size(max=100, message = "Title cannot exceed 100 chars")
     private String title;
 
-    @NotBlank
+    @NotBlank(message = "Content cannot be empty")
     private String content;
+
+    private int version;
 }

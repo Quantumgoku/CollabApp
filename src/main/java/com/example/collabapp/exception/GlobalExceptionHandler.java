@@ -48,6 +48,11 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, "Validation Failed", message);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleStaleNote(StaleNoteException ex){
+        return build(HttpStatus.CONFLICT,"Conflict",ex.getMessage());
+    }
+
     private ResponseEntity<ErrorResponse> build(HttpStatus status, String error, String message) {
         return ResponseEntity.status(status).body(ErrorResponse.builder()
                 .status(status.value())
