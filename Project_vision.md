@@ -172,9 +172,9 @@ Handle simultaneous edits safely.
 
 ## Tasks
 
-* [ ] Add note version field
-* [ ] Increment versions on update
-* [ ] Reject stale updates
+* [x] Add note version field
+* [x] Increment versions on update
+* [x] Reject stale updates
 * [ ] Add edit history tracking
 * [ ] Add optimistic locking concepts
 
