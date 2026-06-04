@@ -175,8 +175,8 @@ Handle simultaneous edits safely.
 * [x] Add note version field
 * [x] Increment versions on update
 * [x] Reject stale updates
-* [ ] Add edit history tracking
-* [ ] Add optimistic locking concepts
+* [x] Add edit history tracking
+* [x] Add optimistic locking concepts
 
 ---
 
