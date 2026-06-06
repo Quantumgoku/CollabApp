@@ -12,14 +12,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class CollabappApplication {
 
-    @Autowired
-    MongoTemplate mongoTemplate;
-
-    @PostConstruct
-    public void debugMongo() {
-        System.out.println("Mongo DB Name: " + mongoTemplate.getDb().getName());
-    }
-
     @Value("${spring.data.mongodb.uri:NOT_FOUND}")
     private String mongoUri;
 
