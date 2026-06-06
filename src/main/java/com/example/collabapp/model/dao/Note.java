@@ -2,6 +2,7 @@ package com.example.collabapp.model.dao;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,10 @@ public class Note {
     @Id
     private String id;
 
-    private String title;
+    @TextIndexed(weight = 2) //text indexing enables full-text search capabillities
+    private String title;    // add weights to boost the relevance score of a specific fields duting search
+
+    @TextIndexed
     private String content;
 
     private String ownerId;

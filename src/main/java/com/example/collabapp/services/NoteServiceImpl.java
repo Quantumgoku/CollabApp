@@ -5,21 +5,30 @@ import com.example.collabapp.exception.NoteNotFoundException;
 import com.example.collabapp.exception.StaleNoteException;
 import com.example.collabapp.exception.UserNotFoundException;
 import com.example.collabapp.model.dao.Note;
+import com.example.collabapp.model.dao.NoteHistory;
 import com.example.collabapp.model.dao.User;
 import com.example.collabapp.model.dto.request.NoteRequest;
+import com.example.collabapp.model.dto.response.NoteHistoryResponse;
 import com.example.collabapp.model.dto.response.NoteResponse;
+import com.example.collabapp.model.dto.response.UserResponse;
+import com.example.collabapp.repository.NoteHistoryRepository;
 import com.example.collabapp.repository.NoteRepository;
 import com.example.collabapp.repository.UserRepository;
+import com.example.collabapp.utils.NoteSearchRequest;
 import com.example.collabapp.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.jspecify.annotations.NonNull;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.aggregation.BooleanOperators;
+import org.springframework.data.domain.*;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -30,6 +39,12 @@ public class NoteServiceImpl implements NoteService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private NoteHistoryRepository noteHistoryRepository;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     private SecurityUtils securityUtils;
@@ -80,8 +95,19 @@ public class NoteServiceImpl implements NoteService {
         note.setTitle(request.getTitle());
         note.setUpdateAt(LocalDateTime.now());
         note.setVersion(note.getVersion()+1);
+        Note saved = noteRepository.save(note);
         log.info("Update the note in the repo");
-        return mapToNoteResponse(noteRepository.save(note));
+
+        noteHistoryRepository.save(NoteHistory.builder()
+                .noteId(saved.getId())
+                .editedBy(userId)
+                .content(saved.getContent())
+                .version(saved.getVersion())
+                .editedAt(LocalDateTime.now())
+                .build());
+        log.info("Saved history for note:{} version: {}",note,saved.getVersion());
+
+        return mapToNoteResponse(saved);
     }
 
     @Override
@@ -91,12 +117,14 @@ public class NoteServiceImpl implements NoteService {
 
         User contributor = userRepository.findByEmail(contributorEmail)
                 .orElseThrow(()->new UserNotFoundException("email: "+contributorEmail));
+        log.info("Found user with email-> {}",contributorEmail);
         if(note.getListOfContributors()==null){
             note.setListOfContributors(new ArrayList<>());
         }
         if(!note.getListOfContributors().contains(contributor.getId())){
             note.getListOfContributors().add(contributor.getId());
         }
+        log.info("Adding {} user to note {}",contributorEmail,noteId);
         return mapToNoteResponse(noteRepository.save(note));
     }
 
@@ -109,6 +137,108 @@ public class NoteServiceImpl implements NoteService {
             note.getListOfContributors().remove(contributorId);
         }
         return mapToNoteResponse(noteRepository.save(note));
+    }
+
+    @Override
+    public List<NoteHistoryResponse> getNoteHistory(String noteId) {
+        String userId = securityUtils.getCurrentUserId();
+        getNoteWithAccess(noteId,userId);
+
+        return noteHistoryRepository.findByNoteIdOrderByVersionDesc(noteId)
+                .stream()
+                .map(h->NoteHistoryResponse.builder()
+                        .id(h.getId())
+                        .noteId(h.getNoteId())
+                        .editedBy(h.getEditedBy())
+                        .title(h.getTitle())
+                        .content(h.getContent())
+                        .editedAt(h.getEditedAt())
+                        .version(h.getVersion())
+                        .build())
+                .toList();
+    }
+
+    @Override
+    public List<UserResponse> getContributors(String noteId) {
+        String userId = securityUtils.getCurrentUserId();
+        Note note = getNoteWithAccess(noteId,userId);
+
+        if(note.getListOfContributors()==null || note.getListOfContributors().isEmpty()){
+            return List.of();
+        }
+
+        return note.getListOfContributors().stream()
+                .map(contributorId -> userRepository.findById(contributorId)
+                        .orElse(null))
+                .filter(Objects::nonNull)
+                .map(user->UserResponse.builder()
+                        .id(user.getId())
+                        .email(user.getEmail())
+                        .userName(user.getUsername())
+                        .build())
+                .toList();
+    }
+
+    @Override
+    public List<NoteResponse> sharedWithMe() {
+        String userId = securityUtils.getCurrentUserId();
+        return noteRepository.findByListOfContributorsContaining(userId)
+                .stream()
+                .map(this::mapToNoteResponse)
+                .toList();
+    }
+
+    @Override
+    public Page<NoteResponse> searchNotes(NoteSearchRequest request) {
+        String userId = securityUtils.getCurrentUserId();
+
+        Sort sort = request.getSortDir().equals("asc")
+                ?Sort.by(request.getSortBy()).ascending()
+                :Sort.by(request.getSortBy()).descending();
+
+        Pageable pageable = PageRequest.of(request.getPage(), request.getSize(),sort);
+
+        Query query = new Query();
+
+        Criteria accessCriteria = new Criteria().orOperator(
+                Criteria.where("ownerId").is(userId),
+                Criteria.where("lisOfContributors").in(userId)
+        );
+        query.addCriteria(accessCriteria);
+
+        if(request.getQuery() != null && !request.getQuery().isBlank()){
+            query.addCriteria(Criteria.where("$text")
+                    .is(new Document("$search",request.getQuery())));
+        }
+
+        long total = mongoTemplate.count(query,Note.class);
+        query.with(pageable);
+        List<Note> notes = mongoTemplate.find(query,Note.class);
+
+        return new PageImpl<>(
+                notes.stream()
+                        .map(this::mapToNoteResponse)
+                        .toList(),
+                pageable,
+                total
+        );
+    }
+
+    @Override
+    public void leaveNote(String noteId) {
+        String userId = securityUtils.getCurrentUserId();
+        Note note = noteRepository.findById(noteId)
+                .orElseThrow(()->new NoteNotFoundException(noteId));
+
+        if(note.getOwnerId().equals(userId)){
+            throw new RuntimeException("Owner cannot leave their own note, delete the note instead");
+        }
+
+        if(note.getListOfContributors()!=null){
+            note.getListOfContributors().remove(userId);
+            noteRepository.save(note);
+            log.info("User {} left note {}",userId,noteId);
+        }
     }
 
     @Override
