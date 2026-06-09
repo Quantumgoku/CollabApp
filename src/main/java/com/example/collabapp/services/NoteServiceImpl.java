@@ -11,6 +11,7 @@ import com.example.collabapp.model.dto.request.NoteRequest;
 import com.example.collabapp.model.dto.response.NoteHistoryResponse;
 import com.example.collabapp.model.dto.response.NoteResponse;
 import com.example.collabapp.model.dto.response.UserResponse;
+import com.example.collabapp.model.event.NoteEditEvent;
 import com.example.collabapp.repository.NoteHistoryRepository;
 import com.example.collabapp.repository.NoteRepository;
 import com.example.collabapp.repository.UserRepository;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -48,6 +50,9 @@ public class NoteServiceImpl implements NoteService {
 
     @Autowired
     private SecurityUtils securityUtils;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     @Override
     public NoteResponse saveNote(NoteRequest request) {
@@ -95,7 +100,9 @@ public class NoteServiceImpl implements NoteService {
         note.setTitle(request.getTitle());
         note.setUpdateAt(LocalDateTime.now());
         note.setVersion(note.getVersion()+1);
+
         Note saved = noteRepository.save(note);
+
         log.info("Update the note in the repo");
 
         noteHistoryRepository.save(NoteHistory.builder()
@@ -106,6 +113,22 @@ public class NoteServiceImpl implements NoteService {
                 .editedAt(LocalDateTime.now())
                 .build());
         log.info("Saved history for note:{} version: {}",note,saved.getVersion());
+
+        //broadcast to WS subs
+        userRepository.findById(userId).ifPresent(user -> {
+            messagingTemplate.convertAndSend(
+                    "/topic/note."+noteId,
+                    NoteEditEvent.builder()
+                            .noteId(noteId)
+                            .editedBy(userId)
+                            .editedByName(user.getUsername())
+                            .title(saved.getTitle())
+                            .content(saved.getContent())
+                            .version(saved.getVersion())
+                            .editedAt(LocalDateTime.now())
+                            .build()
+            );
+        });
 
         return mapToNoteResponse(saved);
     }
