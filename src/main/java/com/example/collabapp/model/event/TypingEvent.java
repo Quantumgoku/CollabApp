@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class TypingEvent {
-    private String notedId;
+    private String noteId;
     private String userId;
     private String username;
     private boolean typing;

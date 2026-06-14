@@ -1,4 +1,4 @@
-package com.example.collabapp.services;
+package com.example.collabapp.services.impl;
 
 import com.example.collabapp.exception.AccessDeniedException;
 import com.example.collabapp.exception.NoteNotFoundException;
@@ -15,8 +15,10 @@ import com.example.collabapp.model.event.NoteEditEvent;
 import com.example.collabapp.repository.NoteHistoryRepository;
 import com.example.collabapp.repository.NoteRepository;
 import com.example.collabapp.repository.UserRepository;
+import com.example.collabapp.services.NoteService;
 import com.example.collabapp.utils.NoteSearchRequest;
 import com.example.collabapp.utils.SecurityUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,25 +36,20 @@ import java.util.Objects;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class NoteServiceImpl implements NoteService {
 
-    @Autowired
-    private NoteRepository noteRepository;
+    private final NoteRepository noteRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private NoteHistoryRepository noteHistoryRepository;
+    private final NoteHistoryRepository noteHistoryRepository;
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    private final MongoTemplate mongoTemplate;
 
-    @Autowired
-    private SecurityUtils securityUtils;
+    private final SecurityUtils securityUtils;
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Override
     public NoteResponse saveNote(NoteRequest request) {

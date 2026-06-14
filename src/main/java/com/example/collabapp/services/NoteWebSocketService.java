@@ -9,4 +9,5 @@ public interface NoteWebSocketService {
     void handleNoteEdit(NoteEditEvent event, SimpMessageHeaderAccessor headerAccessor);
     void handleTyping(TypingEvent event,SimpMessageHeaderAccessor headerAccessor);
     void handlePresence(PresenceEvent event,SimpMessageHeaderAccessor headerAccessor);
+    void test(String msg);
 }

@@ -1,10 +1,11 @@
-package com.example.collabapp.services;
+package com.example.collabapp.services.impl;
 
 import com.example.collabapp.model.event.NoteEditEvent;
 import com.example.collabapp.model.event.PresenceEvent;
 import com.example.collabapp.model.event.TypingEvent;
 import com.example.collabapp.repository.NoteRepository;
 import com.example.collabapp.repository.UserRepository;
+import com.example.collabapp.services.NoteWebSocketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -15,13 +16,11 @@ import java.time.LocalDateTime;
 
 @Service
 @Slf4j
-public class NoteWebSocketServiceIml implements NoteWebSocketService{
+public class NoteWebSocketServiceIml implements NoteWebSocketService {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private NoteRepository noteRepository;
 
     @Override
     public void handleNoteEdit(NoteEditEvent event, SimpMessageHeaderAccessor headerAccessor) {
@@ -52,7 +51,7 @@ public class NoteWebSocketServiceIml implements NoteWebSocketService{
             event.setUsername(user.getUsername());
 
             messagingTemplate.convertAndSend(
-                    "/topic/note."+event.getNotedId()+".typing",
+                    "/topic/note."+event.getNoteId()+".typing",
                     event
             );
         });
@@ -68,12 +67,24 @@ public class NoteWebSocketServiceIml implements NoteWebSocketService{
             event.setUserId(userId);
             event.setUsername(user.getUsername());
 
-            log.info("Presence event: {} is {} on note {}",user.getUsername(),event.getStatus(),event.getNotedId());
+            log.info("Presence event: {} is {} on note {}",user.getUsername(),event.getStatus(),event.getNoteId());
 
             messagingTemplate.convertAndSend(
-                    "/topic/note."+event.getNotedId()+".presence",
+                    "/topic/note."+event.getNoteId()+".presence",
                     event
             );
         });
     }
+
+    @Override
+    public void test(String msg) {
+        log.info("Received {}",msg);
+
+        messagingTemplate.convertAndSend(
+                "/topic/test",
+                msg
+        );
+    }
+
+
 }

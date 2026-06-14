@@ -1,4 +1,4 @@
-package com.example.collabapp.services;
+package com.example.collabapp.services.impl;
 
 import com.example.collabapp.exception.AccessDeniedException;
 import com.example.collabapp.exception.UserNotFoundException;
@@ -10,6 +10,9 @@ import com.example.collabapp.model.dto.RegisterUser;
 import com.example.collabapp.model.dto.request.UserRequest;
 import com.example.collabapp.model.dto.response.UserResponse;
 import com.example.collabapp.repository.UserRepository;
+import com.example.collabapp.services.JwtService;
+import com.example.collabapp.services.RefreshTokenService;
+import com.example.collabapp.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
