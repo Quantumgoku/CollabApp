@@ -68,24 +68,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry){
-        /*
-         * Enables Spring's lightweight in-memory broker.
-         *
-         * "/topic" is used for publish-subscribe messaging
-         * (one sender -> many receivers).
-         *
-         * Example:
-         *   /topic/notes/123
-         *   All collaborators editing Note 123 receive updates.
-         *
-         * "/queue" is used for point-to-point messaging
-         * (server -> specific user/session).
-         *
-         * Example:
-         *   /user/queue/invitations
-         *   Only the intended recipient receives the notification.
-         */
-        registry.enableSimpleBroker("/topic","/queue");
+        registry.enableSimpleBroker("/topic","/queue");  //creates a simple broker and configures prefixes for topic to where that broker should publish
         /*
          * Prefix for messages sent FROM clients TO the application.
          *
@@ -100,18 +83,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
          *     @MessageMapping("/note.update")
          */
         registry.setApplicationDestinationPrefixes("/app");
-        /*
-        * Prefix used for user-specific destinations.
-                *
-                * Enables APIs such as:
-         *   convertAndSendToUser(...)
-         *
-         * Example:
-         *   Server sends:
-         *     /user/queue/notifications
-                *
-                *   Only that authenticated user receives the message.
-         */
         registry.setUserDestinationPrefix("/user");
     }
 
@@ -121,29 +92,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
-        /*
-         * Exposes "/ws" as the endpoint used for the
-         * WebSocket handshake.
-         *
-         * Example:
-         *   const socket = new SockJS("/ws");
-         *
-         * During connection:
-         *   HTTP Upgrade Request
-         *          ↓
-         *   Persistent WebSocket Connection
-         */
-        registry.addEndpoint("/ws")
-                /*
-                * Allows connections from any origin.
-                 *
-                 * Useful during development when frontend
-                * and backend run on different hosts/ports.
-                *
-                * In production, replace "*" with specific
-                 * trusted frontend domains.
-                */
-                .setAllowedOriginPatterns("*")
+        registry.addEndpoint("/ws")  //expose /ws as the endpoint for WS handshake if some1 hit http it will get upgraded to ws
+                .setAllowedOriginPatterns("*") //access filter
                 /*
                  * Enables SockJS fallback options.
                  *
@@ -157,7 +107,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                  * Modern browsers usually support WebSockets,
                  * but SockJS improves compatibility.
                  */
-                .addInterceptors(webSocketAuthInterceptor)
-                .withSockJS();
+                .addInterceptors(webSocketAuthInterceptor);
+                //.withSockJS();
     }
 }

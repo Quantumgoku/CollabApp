@@ -3,8 +3,6 @@ package com.example.collabapp.controller;
 import com.example.collabapp.model.event.NoteEditEvent;
 import com.example.collabapp.model.event.PresenceEvent;
 import com.example.collabapp.model.event.TypingEvent;
-import com.example.collabapp.repository.NoteRepository;
-import com.example.collabapp.repository.UserRepository;
 import com.example.collabapp.services.NoteWebSocketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +34,11 @@ public class NoteWebSocketController {
     @MessageMapping("/note.presence")
     public void handleNotePresence(@Payload PresenceEvent event,SimpMessageHeaderAccessor headerAccessor){
         noteWebSocketService.handlePresence(event,headerAccessor);
+    }
+
+    @MessageMapping("/test")
+    public void test(String msg){
+        noteWebSocketService.test(msg);
     }
 
 }
