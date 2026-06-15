@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILE: prod
+      MONGO_URI: mongodb+srv://Quant:oiU1LcpCb9qIx6qz@cluster0.2zexqm3.mongodb.net/?appName=Cluster0
+      JWT_SECRET: whoisaverygooddogthatisDuke234@#
+      JWT_ACCESS_EXPIRY: 900000
+      JWT_REFRESH_EXPIRY: 604800000
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+volumes:
+  mongo_data:

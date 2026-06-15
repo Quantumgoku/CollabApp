@@ -3,7 +3,6 @@ package com.example.collabapp.services.impl;
 import com.example.collabapp.model.event.NoteEditEvent;
 import com.example.collabapp.model.event.PresenceEvent;
 import com.example.collabapp.model.event.TypingEvent;
-import com.example.collabapp.repository.NoteRepository;
 import com.example.collabapp.repository.UserRepository;
 import com.example.collabapp.services.NoteWebSocketService;
 import lombok.extern.slf4j.Slf4j;

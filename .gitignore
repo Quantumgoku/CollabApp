@@ -37,3 +37,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# secrets — never commit these
+application-prod.properties
+.env
