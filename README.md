@@ -2,6 +2,8 @@
 
 Collaborative note-taking backend inspired by modern knowledge-sharing systems like Notion.
 
+[Link to APP](https://collab-app-9i3b3a2yf-prabhat-kumar-kiskus-projects.vercel.app)
+
 This project is focused on learning and implementing real-world backend engineering concepts progressively instead of building a simple CRUD application.
 
 ---
