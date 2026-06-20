@@ -55,7 +55,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173","https://collab-app-ui.vercel.app"));
+        config.setAllowedOrigins(List.of("http://localhost:5173","https://collab-app-9i3b3a2yf-prabhat-kumar-kiskus-projects.vercel.app"));
         config.setAllowedMethods(List.of("*"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
