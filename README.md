@@ -4,6 +4,8 @@ Collaborative note-taking backend inspired by modern knowledge-sharing systems l
 
 [Link to APP](https://collab-app-9i3b3a2yf-prabhat-kumar-kiskus-projects.vercel.app)
 
+[Link to Deepwiki](https://deepwiki.com/Quantumgoku/CollabApp)
+
 This project is focused on learning and implementing real-world backend engineering concepts progressively instead of building a simple CRUD application.
 
 ---
